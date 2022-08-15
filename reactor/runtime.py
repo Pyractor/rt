@@ -50,18 +50,21 @@ def call_id():
     sha = hashlib.sha256(fmt.encode('ascii')).hexdigest()
     return sha
 
-def slider(default = 50, min = 0, max = 100):
+def slider(default = 50, min = 0, max = 100, visible = True):
     id = call_id()
     obj = get(id, Slider(id=id))
-    obj.value = obj.value or default
+    if obj.value == None:
+        obj.value = default
     obj.min = min
     obj.max = max
+    obj.visible = visible
     register(id, obj)
     return obj
 
-def md(md = ""):
+def md(md = "", visible = True):
     id = call_id()
     obj = get(id, Markdown(id=id))
     obj.md = md
+    obj.visible = visible
     register(id, obj)
     return obj
