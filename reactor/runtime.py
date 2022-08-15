@@ -23,6 +23,19 @@ class Button(BaseModel):
     visible: bool = True
     label: str = ""
 
+class Checkbox(BaseModel):
+    id: str
+    kind: str = "Checkbox"
+    visible: bool = True
+    value: bool = False
+    label: str = ""
+
+class Image(BaseModel):
+    id: str
+    kind: str = "Image"
+    visible: bool = True
+    src: str = ""
+
 global __CALLBACKS
 global __REGISTRY
 global __ORDER
@@ -93,4 +106,20 @@ def button(label = "Button",  visible = True, on_click: Optional[Callable] = Non
     obj.label = label
     obj.visible = visible
     register(id, obj, on_click)
+    return obj
+
+def img(src = "", visible = True, on_click: Optional[Callable] = None):
+    id = call_id()
+    obj = get(id, Image(id=id))
+    obj.src = src
+    obj.visible = visible
+    register(id, obj, on_click)
+    return obj
+
+def checkbox(default = False, label = "Checkbox", visible = True, on_change: Optional[Callable] = None):
+    id = call_id()
+    obj = get(id, Checkbox(id=id, value=default))
+    obj.label = label
+    obj.visible = visible
+    register(id, obj)
     return obj

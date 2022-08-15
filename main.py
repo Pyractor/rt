@@ -8,4 +8,7 @@ rt.md(f"I'm only **visible** when {slider.value} > 1", visible = slider.value > 
 rt.md(f"I'm only visible when {slider.value} < 99", visible = slider.value < 99)
 rt.button("Click me", on_click=lambda: print("\n\n\nClicked\n\n\n"))
 
+checkbox = rt.checkbox(True, label="Is img visible?")
+rt.img("https://marumego.herokuapp.com/random.gif", visible = checkbox.value)
+
 print(rt.__REGISTRY)
