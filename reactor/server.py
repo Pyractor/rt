@@ -30,14 +30,19 @@ class MessageOut(BaseModel):
 async def echo(websocket):
     async for message in websocket:
         msg = MessageIn.parse_raw(message)
+        should_exec = False
         print(message)
         print(msg)
 
         if msg.kind == "Change" and isinstance(msg.message, Change):
             rt.change(msg.message.id, msg.message.value)
+            should_exec = True
 
         if msg.kind == "Hello":
             rt.reset_order()
+            should_exec = True
+
+        if should_exec:
             exec(open("./main.py").read())
             msg = MessageOut(kind="StateSync", message=StateSync(state=State(registry=rt.__REGISTRY, order=rt.__ORDER)))
             await websocket.send(msg.json())

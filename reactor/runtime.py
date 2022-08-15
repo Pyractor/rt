@@ -5,12 +5,16 @@ from pydantic import BaseModel
 
 class Slider(BaseModel):
     id: str
+    kind: str = "Slider"
+    visible: bool = True
     value: Optional[int] = None
     max: int = 0
     min: int = 100
 
 class Markdown(BaseModel):
     id: str
+    kind: str = "MD"
+    visible: bool = True
     md: str = ""
 
 global __REGISTRY
