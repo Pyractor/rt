@@ -16,6 +16,9 @@ class State(BaseModel):
     registry: Dict[str, Any]
     order: List[str]
 
+class Loading(BaseModel):
+    loading: bool = False
+
 class StateSync(BaseModel):
     state: State
 
@@ -25,7 +28,7 @@ class MessageIn(BaseModel):
 
 class MessageOut(BaseModel):
     kind: str
-    message: Union[StateSync, Hello]
+    message: Union[StateSync, Loading]
 
 async def echo(websocket):
     async for message in websocket:
@@ -43,9 +46,11 @@ async def echo(websocket):
             should_exec = True
 
         if should_exec:
+            await websocket.send(MessageOut(kind="Loading", message=Loading(loading=True)).json())
             exec(open("./main.py").read())
             msg = MessageOut(kind="StateSync", message=StateSync(state=State(registry=rt.__REGISTRY, order=rt.__ORDER)))
             await websocket.send(msg.json())
+            await websocket.send(MessageOut(kind="Loading", message=Loading(loading=False)).json())
 
 async def main():
     host = "localhost"

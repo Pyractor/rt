@@ -1,4 +1,5 @@
 import reactor.runtime as rt
+import time
 
 slider = rt.slider(default = 5)
 rt.md(f"Current value is {slider.value}")
