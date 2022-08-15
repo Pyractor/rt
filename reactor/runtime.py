@@ -3,6 +3,9 @@ import hashlib
 from typing import List, Optional, Dict, Any, Callable
 from pydantic import BaseModel
 
+global kv
+kv: Dict[str, Any] = dict()
+
 class Slider(BaseModel):
     id: str
     kind: str = "Slider"
