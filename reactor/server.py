@@ -1,7 +1,8 @@
 import asyncio
 import websockets
 import json
-from typing import List, Optional, Union, Any
+import reactor.runtime as rt
+from typing import List, Optional, Union, Any, Dict
 from pydantic import BaseModel
 
 class Hello(BaseModel):
@@ -11,8 +12,12 @@ class Change(BaseModel):
     id: str
     value: Any
 
+class State(BaseModel):
+    registry: Dict[str, Any]
+    order: List[str]
+
 class StateSync(BaseModel):
-    state: Any
+    state: State
 
 class MessageIn(BaseModel):
     kind: str
@@ -27,8 +32,15 @@ async def echo(websocket):
         msg = MessageIn.parse_raw(message)
         print(message)
         print(msg)
+
+        if msg.kind == "Change" and isinstance(msg.message, Change):
+            rt.change(msg.message.id, msg.message.value)
+
         if msg.kind == "Hello":
-            await websocket.send(StateSync(state="bebebe").json())
+            rt.reset_order()
+            exec(open("./main.py").read())
+            msg = MessageOut(kind="StateSync", message=StateSync(state=State(registry=rt.__REGISTRY, order=rt.__ORDER)))
+            await websocket.send(msg.json())
 
 async def main():
     host = "localhost"

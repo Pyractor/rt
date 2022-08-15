@@ -1,6 +1,6 @@
 import traceback
 import hashlib
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 
 class Slider(BaseModel):
@@ -14,16 +14,31 @@ class Markdown(BaseModel):
     md: str = ""
 
 global __REGISTRY
-__REGISTRY = dict()
+global __ORDER
+__REGISTRY: Dict[str, Any] = dict()
+__ORDER: List[str] = list()
+
+def reset_registry():
+    __REGISTRY = dict()
+
+def reset_order():
+    __ORDER = list()
 
 def reset():
-    __REGISTRY = dict()
+    reset_registry()
+    reset_order()
 
 def register(id, obj):
     __REGISTRY[id] = obj
+    if id not in __ORDER:
+        __ORDER.append(id)
 
 def get(id, default):
     return __REGISTRY.get(id, default)
+
+def change(id: str, value: int):
+    if id in __REGISTRY:
+        __REGISTRY[id].value = value
 
 def call_id():
     stack = traceback.format_stack()
