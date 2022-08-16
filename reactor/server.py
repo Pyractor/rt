@@ -38,6 +38,7 @@ async def echo(websocket):
         print(msg)
 
         if msg.kind == "Change" and isinstance(msg.message, Change):
+            await websocket.send(MessageOut(kind="Loading", message=Loading(loading=True)).json())
             rt.change(msg.message.id, msg.message.value)
             should_exec = True
 
@@ -50,7 +51,8 @@ async def echo(websocket):
             exec(open("./main.py").read())
             msg = MessageOut(kind="StateSync", message=StateSync(state=State(registry=rt.__REGISTRY, order=rt.__ORDER)))
             await websocket.send(msg.json())
-            await websocket.send(MessageOut(kind="Loading", message=Loading(loading=False)).json())
+
+        await websocket.send(MessageOut(kind="Loading", message=Loading(loading=False)).json())
 
 async def main():
     host = "localhost"

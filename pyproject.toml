@@ -8,6 +8,7 @@ authors = ["Max Gonzih <gonzih@gmail.com>"]
 python = "^3.9"
 pydantic = "^1.9.2"
 websockets = "^10.3"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 
